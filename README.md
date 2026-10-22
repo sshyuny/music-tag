@@ -43,3 +43,4 @@ src/
 
 - 설계: [docs/superpowers/specs/2026-10-22-music-tag-design.md](docs/superpowers/specs/2026-10-22-music-tag-design.md)
 - 구현 계획: [docs/superpowers/plans/2026-10-22-music-tag-mvp.md](docs/superpowers/plans/2026-10-22-music-tag-mvp.md)
+- 이후 개선할 것: [docs/improvements.md](docs/improvements.md)
