@@ -5,7 +5,11 @@ import type { Player } from '../ports/Player'
 import type { SongSearch } from '../ports/SongSearch'
 import type { AppDeps } from '../ui/AppContext'
 
-export const freshRepo = () => new DexieSongRepository(`test-${crypto.randomUUID()}`)
+/** 시계는 호출할 때마다 1씩 늘어나서 저장 순서가 addedAt 순서와 같다 */
+export const freshRepo = () => {
+  let t = 0
+  return new DexieSongRepository(`test-${crypto.randomUUID()}`, () => ++t)
+}
 
 export const searchResult = (trackId: number, originalTitle: string, artistName = 'IU'): SearchResult => ({
   trackId,
