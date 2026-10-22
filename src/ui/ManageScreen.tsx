@@ -2,6 +2,7 @@ import { useState, type KeyboardEvent } from 'react'
 import { tagSongCounts } from '../domain/filter'
 import { DuplicateTagNameError, InvalidNameError } from '../ports/SongRepository'
 import { useApp } from './AppContext'
+import { ConfirmButton } from './ConfirmButton'
 
 const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, 'ko')
 
@@ -125,15 +126,5 @@ function EditableName({ label, value, save }: { label: string; value: string; sa
       <input aria-label={label} value={draft} onChange={(e) => setDraft(e.target.value)} onBlur={() => void commit()} onKeyDown={onEnter(() => void commit())} />
       {error && <span className="error">{error}</span>}
     </span>
-  )
-}
-
-/** 브라우저 확인창 대신 버튼을 한 번 더 누르게 한다 */
-function ConfirmButton({ onConfirm }: { onConfirm(): Promise<void> }) {
-  const [armed, setArmed] = useState(false)
-  return (
-    <button type="button" className="danger" onClick={() => (armed ? void onConfirm() : setArmed(true))} onBlur={() => setArmed(false)}>
-      {armed ? '정말 삭제' : '삭제'}
-    </button>
   )
 }

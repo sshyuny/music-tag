@@ -22,15 +22,18 @@ function buildOptions(tags: Tag[], excludeIds: ReadonlySet<string>, input: strin
 
   const matches = tags
     .filter((t) => !excludeIds.has(t.id) && tagKey(t.name).includes(key))
-    .sort((a, b) => {
-      const prefix = Number(tagKey(b.name).startsWith(key)) - Number(tagKey(a.name).startsWith(key))
-      return prefix || a.name.localeCompare(b.name, 'ko')
-    })
-  const options: Option[] = matches.map((tag) => ({ kind: 'pick', tag }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'ko'))
+  const prefixMatches = matches.filter((t) => tagKey(t.name).startsWith(key))
+  const innerMatches = matches.filter((t) => !tagKey(t.name).startsWith(key))
   // 이미 곡에 달린 태그와 같은 이름이면 새로 만들 것도 없다
   const exists = tags.some((t) => tagKey(t.name) === key)
-  if (!exists) options.push({ kind: 'create', name })
-  return options
+
+  // "여름"을 쳤는데 엔터가 #20대초반여름을 달지 않도록, 가운데만 일치하는 태그는 새로 만들기 뒤에 둔다
+  return [
+    ...prefixMatches.map((tag): Option => ({ kind: 'pick', tag })),
+    ...(exists ? [] : [{ kind: 'create', name } as Option]),
+    ...innerMatches.map((tag): Option => ({ kind: 'pick', tag })),
+  ]
 }
 
 /** 한글 조합 중에 누른 엔터는 무시해야 한다 */

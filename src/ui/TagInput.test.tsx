@@ -25,10 +25,10 @@ it('suggests matching tags with counts', async () => {
   expect(optionTexts()).toEqual(['#가을 · 12곡', '#가을새벽 · 3곡', '＋ "가" 새 태그로 만들기'])
 })
 
-it('puts prefix matches before other matches', async () => {
+it('puts inner matches after the create option', async () => {
   const { input } = setup()
   await userEvent.type(input, '을')
-  expect(optionTexts().slice(0, 2)).toEqual(['#가을 · 12곡', '#가을새벽 · 3곡'])
+  expect(optionTexts()).toEqual(['＋ "을" 새 태그로 만들기', '#가을 · 12곡', '#가을새벽 · 3곡'])
 })
 
 it('excludes tags already on the song', async () => {
@@ -87,6 +87,20 @@ it('ignores Enter on blank', async () => {
   await userEvent.type(input, ' # {Enter}')
   expect(onPick).not.toHaveBeenCalled()
   expect(onCreate).not.toHaveBeenCalled()
+})
+
+it('Enter on a new name creates it even when a longer tag contains it', async () => {
+  const onPick = vi.fn()
+  const onCreate = vi.fn()
+  const longer = [tag('early20s', '20대초반여름'), tag('autumn-night', '가을밤')]
+  render(<TagInput tags={longer} excludeIds={new Set()} songCounts={counts} onPick={onPick} onCreate={onCreate} />)
+
+  await userEvent.type(screen.getByRole('combobox'), '여름')
+  expect(optionTexts()).toEqual(['＋ "여름" 새 태그로 만들기', '#20대초반여름'])
+
+  await userEvent.keyboard('{Enter}')
+  expect(onCreate).toHaveBeenCalledWith('여름')
+  expect(onPick).not.toHaveBeenCalled()
 })
 
 it('Escape closes the list', async () => {

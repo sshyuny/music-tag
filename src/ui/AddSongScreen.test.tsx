@@ -170,6 +170,8 @@ it('deletes the selected song', async () => {
   const panel = await selectSaved(repo)
 
   await userEvent.click(within(panel).getByRole('button', { name: '곡 삭제' }))
+  expect(await repo.listSongs()).toHaveLength(1)
+  await userEvent.click(within(panel).getByRole('button', { name: '정말 삭제' }))
 
   await waitFor(() => expect(screen.queryByRole('region', { name: '선택한 곡' })).toBeNull())
   expect(await repo.listSongs()).toEqual([])

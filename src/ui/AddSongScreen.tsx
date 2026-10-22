@@ -3,6 +3,7 @@ import { tagSongCounts } from '../domain/filter'
 import { matchSavedSongs, rankItunesResults } from '../domain/searchText'
 import type { SearchResult, Song, Tag } from '../domain/types'
 import { useApp } from './AppContext'
+import { ConfirmButton } from './ConfirmButton'
 import { TagInput } from './TagInput'
 
 const DEBOUNCE_MS = 400
@@ -201,9 +202,7 @@ function SongPanel({ song, onDeleted }: { song: Song; onDeleted: () => void }) {
         onCreate={(name) => void create(name)}
       />
 
-      <button type="button" className="danger" onClick={() => void remove()}>
-        곡 삭제
-      </button>
+      <ConfirmButton label="곡 삭제" onConfirm={remove} />
     </section>
   )
 }
