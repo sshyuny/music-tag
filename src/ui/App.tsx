@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AddSongScreen } from './AddSongScreen'
 import { BrowseScreen } from './BrowseScreen'
+import { ManageScreen } from './ManageScreen'
 
 const TABS = ['추가', '꺼내기', '관리'] as const
 type TabName = (typeof TABS)[number]
@@ -21,6 +22,7 @@ export function App() {
         <h2>{tab}</h2>
         {tab === '추가' && <AddSongScreen />}
         {tab === '꺼내기' && <BrowseScreen />}
+        {tab === '관리' && <ManageScreen />}
       </main>
     </div>
   )
