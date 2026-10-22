@@ -91,6 +91,18 @@ it('selecting iTunes result saves it and shows tag panel', async () => {
   expect(await repo.listSongs()).toHaveLength(1)
 })
 
+it('shows the selected song panel above the search results', async () => {
+  const search = fakeSearch(async () => [searchResult(5, 'Through the Night'), searchResult(6, 'Other')])
+  renderScreen(testDeps({ search }))
+
+  await userEvent.type(searchBox(), '밤편지')
+  await userEvent.click(await screen.findByRole('button', { name: /Through the Night/ }))
+
+  const panel = await screen.findByRole('region', { name: '선택한 곡' })
+  const results = section('iTunes 검색 결과')
+  expect(panel.compareDocumentPosition(results) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+})
+
 const selectSaved = async (repo: SongRepository) => {
   renderScreen(testDeps({ repo }))
   await userEvent.type(searchBox(), '밤편지')

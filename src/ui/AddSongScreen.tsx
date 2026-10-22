@@ -65,6 +65,9 @@ export function AddSongScreen() {
         autoFocus
       />
 
+      {/* 검색 결과가 길어도 바로 태그를 달 수 있게 검색창 바로 아래에 둔다 */}
+      {selected && <SongPanel key={selected.trackId} song={selected} onDeleted={() => setSelectedId(null)} />}
+
       {term && (
         <div className="search-results">
           <section aria-label="내 곡">
@@ -85,8 +88,6 @@ export function AddSongScreen() {
           </section>
         </div>
       )}
-
-      {selected && <SongPanel key={selected.trackId} song={selected} onDeleted={() => setSelectedId(null)} />}
     </div>
   )
 }
