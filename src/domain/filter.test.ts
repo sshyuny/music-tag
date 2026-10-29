@@ -1,7 +1,7 @@
 import { browsableTags, dimmedTagIds, filterSongs, tagSongCounts } from './filter'
 import type { Song, Tag } from './types'
 
-const tag = (id: string, groupId: string | null): Tag => ({ id, name: id, groupId, lastUsedAt: null })
+const tag = (id: string, groupId: string | null): Tag => ({ id, userId: 'default', name: id, nameKey: id, groupId, lastUsedAt: null })
 const song = (trackId: number, tagIds: string[]): Song => ({
   trackId,
   title: `s${trackId}`,
@@ -58,7 +58,7 @@ describe('dimmedTagIds', () => {
 
 describe('browsableTags', () => {
   it('hides tags with zero songs', () => {
-    const extra = [...tags, { id: 'empty', name: '빈태그', groupId: null, lastUsedAt: null }]
+    const extra = [...tags, tag('empty', null)]
     expect(browsableTags(songs, extra).map((t) => t.id)).not.toContain('empty')
   })
 })

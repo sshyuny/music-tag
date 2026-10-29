@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import type { Tag } from '../domain/types'
 import { TagInput } from './TagInput'
 
-const tag = (id: string, name: string): Tag => ({ id, name, groupId: null, lastUsedAt: null })
+const tag = (id: string, name: string): Tag => ({ id, userId: 'default', name, nameKey: name.toLowerCase(), groupId: null, lastUsedAt: null })
 const tags = [tag('autumn', '가을'), tag('autumn-dawn', '가을새벽'), tag('summer', '여름'), tag('jazz', 'Jazz')]
 const counts = new Map([
   ['autumn', 12],

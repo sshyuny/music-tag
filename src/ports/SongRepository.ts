@@ -14,13 +14,20 @@ export class InvalidNameError extends Error {
   }
 }
 
+export class InvalidReferenceError extends Error {
+  constructor() {
+    super('대상이 없거나 현재 사용자의 데이터가 아닙니다')
+    this.name = 'InvalidReferenceError'
+  }
+}
+
+/** 태그·그룹·연결은 현재 사용자 범위, 곡 정보는 공통이다. */
 export interface SongRepository {
   listSongs(): Promise<Song[]>
   /** 이미 있으면 기존 곡을 그대로 돌려준다 */
   saveSong(result: SearchResult): Promise<Song>
   /** 빈 제목이면 originalTitle로 되돌린다 */
   updateSongTitle(trackId: number, title: string): Promise<void>
-  deleteSong(trackId: number): Promise<void>
   /** 중복 없이 추가하고 태그의 lastUsedAt을 갱신한다 */
   addTagToSong(trackId: number, tagId: string): Promise<void>
   removeTagFromSong(trackId: number, tagId: string): Promise<void>
