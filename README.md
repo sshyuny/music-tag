@@ -45,6 +45,8 @@ src/
 
 ## 문서
 
+- LLM 작업 지침: [AGENTS.md](AGENTS.md)
+
 - 데이터 구조 변경: [docs/design/data-model-redesign.md](docs/design/data-model-redesign.md)
 
 - 설계: [docs/superpowers/specs/2026-10-22-music-tag-design.md](docs/superpowers/specs/2026-10-22-music-tag-design.md)
