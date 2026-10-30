@@ -164,15 +164,11 @@ it('edits display title', async () => {
   await waitFor(async () => expect((await repo.listSongs())[0].title).toBe('밤편지'))
 })
 
-it('deletes the selected song', async () => {
+it('does not offer shared song deletion', async () => {
   const repo = freshRepo()
   await seedSaved(repo)
   const panel = await selectSaved(repo)
 
-  await userEvent.click(within(panel).getByRole('button', { name: '곡 삭제' }))
+  expect(within(panel).queryByRole('button', { name: '곡 삭제' })).not.toBeInTheDocument()
   expect(await repo.listSongs()).toHaveLength(1)
-  await userEvent.click(within(panel).getByRole('button', { name: '정말 삭제' }))
-
-  await waitFor(() => expect(screen.queryByRole('region', { name: '선택한 곡' })).toBeNull())
-  expect(await repo.listSongs()).toEqual([])
 })

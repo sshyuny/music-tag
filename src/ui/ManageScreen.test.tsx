@@ -23,7 +23,8 @@ it('creates group and assigns tag to it', async () => {
 
   await userEvent.type(screen.getByLabelText('새 그룹'), '계절{Enter}')
   const row = await tagRow('가을')
-  await userEvent.selectOptions(await within(row).findByRole('combobox', { name: '그룹' }), '계절')
+  const option = await within(row).findByRole('option', { name: '계절' })
+  await userEvent.selectOptions(within(row).getByRole('combobox', { name: '그룹' }), option)
 
   await waitFor(async () => {
     const [group] = await repo.listGroups()

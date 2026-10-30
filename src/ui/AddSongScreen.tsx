@@ -3,7 +3,6 @@ import { tagSongCounts } from '../domain/filter'
 import { matchSavedSongs, rankItunesResults } from '../domain/searchText'
 import type { SearchResult, Song, Tag } from '../domain/types'
 import { useApp } from './AppContext'
-import { ConfirmButton } from './ConfirmButton'
 import { TagInput } from './TagInput'
 
 const DEBOUNCE_MS = 400
@@ -67,7 +66,7 @@ export function AddSongScreen() {
       />
 
       {/* 검색 결과가 길어도 바로 태그를 달 수 있게 검색창 바로 아래에 둔다 */}
-      {selected && <SongPanel key={selected.trackId} song={selected} onDeleted={() => setSelectedId(null)} />}
+      {selected && <SongPanel key={selected.trackId} song={selected} />}
 
       {term && (
         <div className="search-results">
@@ -115,7 +114,7 @@ function SongRow({ song, tags, onClick }: { song: SearchResult | Song; tags?: Ta
   )
 }
 
-function SongPanel({ song, onDeleted }: { song: Song; onDeleted: () => void }) {
+function SongPanel({ song }: { song: Song }) {
   const { tags, songs, repo, refresh } = useApp()
   const [draft, setDraft] = useState(song.title)
 
@@ -145,12 +144,6 @@ function SongPanel({ song, onDeleted }: { song: Song; onDeleted: () => void }) {
 
   const detach = async (tagId: string) => {
     await repo.removeTagFromSong(song.trackId, tagId)
-    await refresh()
-  }
-
-  const remove = async () => {
-    await repo.deleteSong(song.trackId)
-    onDeleted()
     await refresh()
   }
 
@@ -201,8 +194,6 @@ function SongPanel({ song, onDeleted }: { song: Song; onDeleted: () => void }) {
         onPick={(id) => void attach(id)}
         onCreate={(name) => void create(name)}
       />
-
-      <ConfirmButton label="곡 삭제" onConfirm={remove} />
     </section>
   )
 }

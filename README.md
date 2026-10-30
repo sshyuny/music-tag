@@ -24,7 +24,11 @@ npm run dev      # http://localhost:5173
 
 ## 데이터
 
-- 곡·태그·그룹은 브라우저 IndexedDB(`music-tag`)에 저장된다. 브라우저 데이터를 지우면 함께 사라진다.
+- 데이터는 브라우저 IndexedDB(`music-tag-v2`, 스키마 버전 2)에 저장된다. 브라우저 데이터를 지우면 함께 사라진다.
+- `users`, `songs`, `tags`, `groups`, `songTags` 테이블을 사용한다. 곡은 공통이며 태그·그룹·곡–태그 연결은 사용자별로 관리한다.
+- 현재 화면은 기본 사용자 한 명으로 동작한다. 로그인·사용자 전환 기능은 아직 없다.
+- 곡 제목 수정은 공통으로 반영된다. 곡 삭제는 앱에서 제공하지 않는다.
+- 이전 `music-tag` DB는 앱 시작 시 삭제한다. 기존 데이터는 이관하지 않으며, 새 DB의 데이터는 재접속해도 유지한다.
 
 ## 구조
 
@@ -40,6 +44,10 @@ src/
 저장소나 재생 방식을 바꿀 때는 `adapters/`에 새 구현을 추가하고 `src/main.tsx`에서 갈아 끼우면 된다.
 
 ## 문서
+
+- LLM 작업 지침: [AGENTS.md](AGENTS.md)
+
+- 데이터 구조 변경: [docs/design/data-model-redesign.md](docs/design/data-model-redesign.md)
 
 - 설계: [docs/superpowers/specs/2026-10-22-music-tag-design.md](docs/superpowers/specs/2026-10-22-music-tag-design.md)
 - 구현 계획: [docs/superpowers/plans/2026-10-22-music-tag-mvp.md](docs/superpowers/plans/2026-10-22-music-tag-mvp.md)
