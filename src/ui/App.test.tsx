@@ -5,8 +5,10 @@ import { App } from './App'
 import { AppProvider } from './AppContext'
 
 it('starts on 추가 and switches tabs', async () => {
+  const deps = testDeps()
+  await deps.repo.createGroup('테스트 그룹')
   render(
-    <AppProvider deps={testDeps()}>
+    <AppProvider deps={deps}>
       <App />
     </AppProvider>,
   )
@@ -19,4 +21,5 @@ it('starts on 추가 and switches tabs', async () => {
 
   await userEvent.click(screen.getByRole('tab', { name: '관리' }))
   expect(screen.getByRole('heading', { name: '관리' })).toBeInTheDocument()
+  expect(await screen.findByRole('textbox', { name: '그룹 이름 테스트 그룹' })).toBeInTheDocument()
 })

@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { browsableTags, dimmedTagIds, filterSongs, tagSongCounts } from '../domain/filter'
 import type { Tag } from '../domain/types'
 import { useApp } from './AppContext'
+import { SongPanel } from './SongPanel'
 
 const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, 'ko')
 
 export function BrowseScreen() {
   const { songs, tags, groups, player } = useApp()
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set())
+
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const editingSong = songs.find(song => song.trackId === editingId)
+  const editorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (editingId !== null) editorRef.current?.scrollIntoView?.({ block: 'nearest' })
+  }, [editingId])
 
   if (songs.length === 0) return <p className="hint">아직 태그 단 곡이 없어. '추가' 탭에서 시작해줘.</p>
 
@@ -54,6 +63,13 @@ export function BrowseScreen() {
         ))}
       </section>
 
+      {editingSong && (
+        <div ref={editorRef}>
+          <SongPanel key={editingSong.trackId} song={editingSong} />
+          <button type="button" onClick={() => setEditingId(null)}>편집 닫기</button>
+        </div>
+      )}
+
       <section aria-label="결과" className="results">
         <div className="results-bar">
           <h3>{results.length}곡</h3>
@@ -74,13 +90,21 @@ export function BrowseScreen() {
         <ul>
           {results.map((song) => (
             <li key={song.trackId} className="song-row">
-              {song.artworkUrl ? <img src={song.artworkUrl} alt="" width={40} height={40} /> : <span className="art" />}
-              <span className="meta">
-                <b>{song.title}</b>
-                <span>
-                  {song.artistName} · {song.tagIds.map((id) => `#${tagName(id)}`).join(' ')}
+              <button
+                type="button"
+                className="song-select"
+                aria-label={`${song.title} 태그 편집`}
+                aria-pressed={editingId === song.trackId}
+                onClick={() => setEditingId(song.trackId)}
+              >
+                {song.artworkUrl ? <img src={song.artworkUrl} alt="" width={40} height={40} /> : <span className="art" />}
+                <span className="meta">
+                  <b>{song.title}</b>
+                  <span>
+                    {song.artistName} · {song.tagIds.map((id) => `#${tagName(id)}`).join(' ')}
+                  </span>
                 </span>
-              </span>
+              </button>
               <button type="button" aria-label={`${song.title} 재생`} onClick={() => player.play(song)}>
                 ▶
               </button>
