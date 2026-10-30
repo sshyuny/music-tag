@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { SongRepository } from '../ports/SongRepository'
 import { fakePlayer, freshRepo, searchResult, testDeps } from '../test/fakes'
@@ -89,6 +89,7 @@ it('play button calls player', async () => {
   await userEvent.click(chip(/^#재즈/))
   await userEvent.click(screen.getByRole('button', { name: 's3 재생' }))
   expect(player.play).toHaveBeenCalledWith(expect.objectContaining({ artistName: 'IU', originalTitle: 's3' }))
+  expect(screen.queryByRole('region', { name: '선택한 곡' })).toBeNull()
 })
 
 it('play-all is disabled', async () => {
@@ -103,4 +104,47 @@ it('shows empty message when there are no songs', async () => {
     </AppProvider>,
   )
   expect(await screen.findByText("아직 태그 단 곡이 없어. '추가' 탭에서 시작해줘.")).toBeInTheDocument()
+})
+
+
+const openSong = async (title: string) => {
+  await userEvent.click(screen.getByRole('button', { name: `${title} 태그 편집` }))
+  return screen.findByRole('region', { name: '선택한 곡' })
+}
+
+it('edits tags from a song in the browse results and updates counts', async () => {
+  await renderScreen()
+  const panel = await openSong('s1')
+  const input = within(panel).getByRole('combobox', { name: '태그 입력' })
+  await userEvent.type(input, '산책{Enter}')
+  expect(await within(panel).findByRole('button', { name: '#산책 떼기' })).toBeInTheDocument()
+  expect(chip(/^#산책/)).toHaveTextContent('1')
+  await userEvent.type(input, '재즈{Enter}')
+  expect(await within(panel).findByRole('button', { name: '#재즈 떼기' })).toBeInTheDocument()
+  expect(chip(/^#재즈/)).toHaveTextContent('2')
+  await userEvent.click(within(panel).getByRole('button', { name: '#가을 떼기' }))
+  await waitFor(() => expect(within(panel).queryByRole('button', { name: '#가을 떼기' })).toBeNull())
+  expect(chip(/^#가을/)).toHaveTextContent('1')
+})
+
+it('keeps the editor open when tag removal filters the song out', async () => {
+  await renderScreen()
+  await userEvent.click(chip(/^#새벽/))
+  const panel = await openSong('s1')
+  await userEvent.click(within(panel).getByRole('button', { name: '#새벽 떼기' }))
+  await waitFor(() => expect(resultTitles()).toEqual([]))
+  expect(screen.getByRole('region', { name: '선택한 곡' })).toBeInTheDocument()
+  await userEvent.type(within(panel).getByRole('combobox'), '새벽{Enter}')
+  await waitFor(() => expect(resultTitles()).toEqual(['s1']))
+})
+
+it('switches the selected song and closes the editor', async () => {
+  await renderScreen()
+  await openSong('s1')
+  const panel = await openSong('s3')
+  expect(within(panel).getByLabelText('표시 제목')).toHaveValue('s3')
+  expect(within(panel).getByRole('button', { name: '#여름 떼기' })).toBeInTheDocument()
+  expect(within(panel).queryByRole('button', { name: '#가을 떼기' })).toBeNull()
+  await userEvent.click(screen.getByRole('button', { name: '편집 닫기' }))
+  expect(screen.queryByRole('region', { name: '선택한 곡' })).toBeNull()
 })
