@@ -1,5 +1,7 @@
 # music-tag 설계
 
+> 초기 MVP 당시의 기록이다. 현재 저장소는 서버 SQLite이며 [현재 데이터 구조](../../design/data-model-redesign.md)와 [서버 DB 전환 기록](../plans/2026-11-06-server-db.md)을 참고한다.
+
 > 작성: 2026-10-22
 > 목적 원문: 옵시디언 vault `md-files/2610-음악-태그-기록/01.서비스 목적.md`
 > 아이디어 원문: 같은 폴더 `00.음악 태그 기록 아이디어.md`
