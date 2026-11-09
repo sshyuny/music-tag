@@ -7,7 +7,7 @@ import { TagInput } from './TagInput'
 const RECENT_TAG_LIMIT = 8
 
 export function SongPanel({ song }: { song: Song }) {
-  const { tags, songs, repo, refresh } = useApp()
+  const { tags, songs, repo, refresh, run } = useApp()
   const [draft, setDraft] = useState(song.title)
 
   const attached = new Set(song.tagIds)
@@ -46,9 +46,9 @@ export function SongPanel({ song }: { song: Song }) {
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          onBlur={() => void commitTitle()}
+          onBlur={() => void run(commitTitle)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.nativeEvent.isComposing) void commitTitle()
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing && e.keyCode !== 229) void run(commitTitle)
           }}
         />
       </label>
@@ -63,7 +63,7 @@ export function SongPanel({ song }: { song: Song }) {
             type="button"
             className="chip on"
             aria-label={`#${tag.name} 떼기`}
-            onClick={() => void detach(tag.id)}
+            onClick={() => void run(() => detach(tag.id))}
           >
             #{tag.name} ✕
           </button>
@@ -73,7 +73,7 @@ export function SongPanel({ song }: { song: Song }) {
       <div className="chips" role="group" aria-label="최근 쓴 태그">
         <span className="label">최근 쓴 태그</span>
         {recentTags.map((tag) => (
-          <button key={tag.id} type="button" className="chip" onClick={() => void attach(tag.id)}>
+          <button key={tag.id} type="button" className="chip" onClick={() => void run(() => attach(tag.id))}>
             #{tag.name}
           </button>
         ))}
@@ -83,8 +83,8 @@ export function SongPanel({ song }: { song: Song }) {
         tags={tags}
         excludeIds={attached}
         songCounts={tagSongCounts(songs)}
-        onPick={(id) => void attach(id)}
-        onCreate={(name) => void create(name)}
+        onPick={(id) => void run(() => attach(id))}
+        onCreate={(name) => void run(() => create(name))}
       />
     </section>
   )

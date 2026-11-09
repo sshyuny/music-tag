@@ -12,7 +12,7 @@ type ItunesState =
   | { term: string; status: 'error' }
 
 export function AddSongScreen() {
-  const { songs, tags, repo, search, refresh } = useApp()
+  const { songs, tags, repo, search, refresh, run } = useApp()
   const [query, setQuery] = useState('')
   const [itunes, setItunes] = useState<ItunesState | null>(null)
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -81,7 +81,7 @@ export function AddSongScreen() {
             {current?.status === 'error' && <p className="error">iTunes 검색에 실패했어. 잠시 뒤 다시 시도해줘.</p>}
             {current?.status === 'ok' && itunesResults.length === 0 && <p className="hint">결과가 없어.</p>}
             {itunesResults.map((result) => (
-              <SongRow key={result.trackId} song={result} onClick={() => void pickItunes(result)} />
+              <SongRow key={result.trackId} song={result} onClick={() => void run(() => pickItunes(result))} />
             ))}
           </section>
         </div>
