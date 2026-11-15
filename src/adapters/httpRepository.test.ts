@@ -51,3 +51,18 @@ it('encodes IDs in paths', async () => {
   await new HttpSongRepository('/api', fetchApi).deleteTag('a/b?#')
   expect(fetchApi.mock.calls[0][0]).toBe('/api/tags/a%2Fb%3F%23')
 })
+
+it('calls the browser fetch with its global receiver for reads and writes', async () => {
+  const fetchApi: typeof fetch = async function (this: unknown, _input, init) {
+    if (this !== globalThis) throw new TypeError('Illegal invocation')
+    return new Response(JSON.stringify(init?.method === 'POST' ? { ...searchResult, title: searchResult.originalTitle, tagIds: [] } : []))
+  }
+  vi.stubGlobal('fetch', fetchApi)
+  try {
+    const repo = new HttpSongRepository()
+    await expect(repo.listSongs()).resolves.toEqual([])
+    await expect(repo.saveSong(searchResult)).resolves.toMatchObject({ trackId: searchResult.trackId })
+  } finally {
+    vi.unstubAllGlobals()
+  }
+})

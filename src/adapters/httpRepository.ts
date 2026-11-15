@@ -4,7 +4,7 @@ import { DuplicateTagNameError, InvalidNameError, InvalidReferenceError, type So
 export class HttpSongRepository implements SongRepository {
   private readonly baseUrl: string
   private readonly fetchApi: typeof fetch
-  constructor(baseUrl = '/api', fetchApi: typeof fetch = fetch) {
+  constructor(baseUrl = '/api', fetchApi: typeof fetch = fetch.bind(globalThis)) {
     this.baseUrl = baseUrl
     this.fetchApi = fetchApi
   }
