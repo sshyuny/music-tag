@@ -85,9 +85,7 @@ server/
 
 ## 문서
 
+개발 순서와 단계별 상세 문서는 [개발 흐름](docs/00.개발흐름.md)에서 찾아본다.
+
+- 이후 할 일과 보류한 사항: [이후 할 일](docs/90.이후-할-일.md)
 - LLM 작업 지침: [AGENTS.md](AGENTS.md)
-- 현재 데이터 구조: [docs/design/data-model-redesign.md](docs/design/data-model-redesign.md)
-- 서버 DB 전환 계획·검증 상태: [docs/superpowers/plans/2026-11-06-server-db.md](docs/superpowers/plans/2026-11-06-server-db.md)
-- 초기 설계: [docs/superpowers/specs/2026-10-22-music-tag-design.md](docs/superpowers/specs/2026-10-22-music-tag-design.md)
-- 초기 MVP 구현 계획: [docs/superpowers/plans/2026-10-22-music-tag-mvp.md](docs/superpowers/plans/2026-10-22-music-tag-mvp.md)
-- 이후 개선할 것: [docs/improvements.md](docs/improvements.md)
