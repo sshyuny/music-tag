@@ -1,5 +1,7 @@
 # music-tag MVP Implementation Plan
 
+> 초기 MVP 당시의 기록이다. 현재 저장소는 서버 SQLite이며 [현재 데이터 구조](../../design/data-model-redesign.md)와 [서버 DB 전환 기록](../plans/2026-11-06-server-db.md)을 참고한다.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 곡을 iTunes로 검색해 태그를 달고, 태그를 겹쳐 골라 곡을 다시 꺼내는 PC 브라우저용 로컬 웹앱.

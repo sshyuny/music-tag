@@ -12,13 +12,13 @@ const onEnter = (run: () => void) => (e: KeyboardEvent<HTMLInputElement>) => {
 }
 
 export function ManageScreen() {
-  const { tags, groups, songs, repo, refresh } = useApp()
+  const { tags, groups, songs, repo, refresh, run } = useApp()
   const counts = tagSongCounts(songs)
 
-  const after = (action: () => Promise<void>) => async () => {
+  const after = (action: () => Promise<void>) => () => run(async () => {
     await action()
     await refresh()
-  }
+  })
 
   return (
     <div className="manage-screen">
@@ -65,7 +65,10 @@ export function ManageScreen() {
                   <select
                     aria-label="그룹"
                     value={tag.groupId ?? ''}
-                    onChange={(e) => void after(() => repo.setTagGroup(tag.id, e.target.value || null))()}
+                    onChange={(e) => {
+                      const groupId = e.target.value || null
+                      void after(() => repo.setTagGroup(tag.id, groupId))()
+                    }}
                   >
                     <option value="">그룹 없음</option>
                     {[...groups].sort(byName).map((g) => (
@@ -89,6 +92,7 @@ export function ManageScreen() {
 }
 
 function NewNameInput({ label, onSubmit, onDone }: { label: string; onSubmit(name: string): Promise<void>; onDone(): Promise<void> }) {
+  const { run } = useApp()
   const [value, setValue] = useState('')
   const submit = async () => {
     try {
@@ -100,12 +104,13 @@ function NewNameInput({ label, onSubmit, onDone }: { label: string; onSubmit(nam
     await onDone()
   }
   return (
-    <input aria-label={label} placeholder={`${label} 입력 후 엔터`} value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={onEnter(() => void submit())} />
+    <input aria-label={label} placeholder={`${label} 입력 후 엔터`} value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={onEnter(() => void run(submit))} />
   )
 }
 
 /** 엔터나 포커스를 잃을 때 저장한다. 빈 이름은 되돌리고, 중복 이름은 오류를 보여주고 되돌린다 */
 function EditableName({ label, value, save }: { label: string; value: string; save(name: string): Promise<void> }) {
+  const { run } = useApp()
   const [draft, setDraft] = useState(value)
   const [error, setError] = useState<string | null>(null)
 
@@ -123,7 +128,7 @@ function EditableName({ label, value, save }: { label: string; value: string; sa
 
   return (
     <span className="editable-name">
-      <input aria-label={label} value={draft} onChange={(e) => setDraft(e.target.value)} onBlur={() => void commit()} onKeyDown={onEnter(() => void commit())} />
+      <input aria-label={label} value={draft} onChange={(e) => setDraft(e.target.value)} onBlur={() => void run(commit)} onKeyDown={onEnter(() => void run(commit))} />
       {error && <span className="error">{error}</span>}
     </span>
   )

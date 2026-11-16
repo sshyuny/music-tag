@@ -24,3 +24,10 @@ dist-ssr
 *.sw?
 
 .superpowers/
+
+# Server database (including SQLite journal files)
+data/
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
